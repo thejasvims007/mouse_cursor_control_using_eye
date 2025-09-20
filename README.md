@@ -1,4 +1,4 @@
-# 🎮 FaceMouse YouTube Controller
+# 🎮 Eye Controlled Cursor Using Python 
 
 **Control YouTube with your face and voice!** An enhanced version of FaceMouse that integrates facial gesture control with YouTube playback control and voice commands.
 
