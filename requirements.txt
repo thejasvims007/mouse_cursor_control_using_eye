@@ -5,7 +5,7 @@ opencv-contrib-python>=4.5.2.54
 opencv-python>=4.5.2.52
 PyAutoGUI>=0.9.52
 scipy>=1.7.0
-dlib>=19.24.0
+
 
 # YouTube Control Dependencies
 selenium>=4.15.0
