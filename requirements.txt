@@ -1,0 +1,19 @@
+# Core FaceMouse Dependencies
+mouse>=0.7.1
+numpy>=1.20.0,<1.23.0
+opencv-contrib-python>=4.5.2.54
+opencv-python>=4.5.2.52
+PyAutoGUI>=0.9.52
+scipy>=1.7.0
+dlib>=19.24.0
+
+# YouTube Control Dependencies
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+speechrecognition>=3.10.0
+pyaudio>=0.2.13
+pygame>=2.5.0
+
+# Additional Dependencies for Windows
+comtypes>=1.1.14
+pypiwin32>=223
