@@ -2,7 +2,7 @@
 
 **Control YouTube with your face and voice!** An enhanced version of FaceMouse that integrates facial gesture control with YouTube playback control and voice commands.
 
-![FaceMouse YouTube](https://img.shields.io/badge/FaceMouse-YouTube-brightgreen) ![Python](https://img.shields.io/badge/Python-3.8+-blue) ![OpenCV](https://img.shields.io/badge/OpenCV-4.5+-red) ![Selenium](https://img.shields.io/badge/Selenium-4.15+-orange)
+[Python](https://img.shields.io/badge/Python-3.8+-blue) ![OpenCV](https://img.shields.io/badge/OpenCV-4.5+-red) ![Selenium](https://img.shields.io/badge/Selenium-4.15+-orange)
 
 ## ✨ Features
 
