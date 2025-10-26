@@ -140,6 +140,10 @@ pip install -r requirements.txt
 # Download compressed model (64MB)
 curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
 
+next paste this
+
+powershell -Command "Invoke-WebRequest -Uri 'http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2' -OutFile 'shape_predictor_68_face_landmarks.dat.bz2'"
+
 # Decompress model (creates 99MB .dat file)
 python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Model decompressed successfully!')"
 ```
