@@ -1,7 +1,3 @@
-"""
-Enhanced FaceMouse with YouTube Control
-Integrates facial gesture control with YouTube playback control and voice commands
-"""
 # Importing packages
 from scipy.spatial import distance as dist
 from collections import OrderedDict
@@ -95,17 +91,48 @@ isMouseDown = False
 youtube_mode = False
 youtube_initialized = False
 
-# Initializing Dlib's face detector (HOG-based) and creating the facial landmark predictor
+# --- Initialization checks (model file, detector/predictor and camera) ---
+# Ensure the dlib facial landmark model exists before creating the predictor
+MODEL_PATH = "shape_predictor_68_face_landmarks.dat"
+if not os.path.exists(MODEL_PATH):
+    print("\n❌ Required model file not found:\n   -> shape_predictor_68_face_landmarks.dat\n")
+    print("Please download it as described in the README (http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)")
+    print("Then decompress it in the project folder. Exiting.")
+    sys.exit(1)
+
+# Initialize Dlib's face detector (HOG-based) and the facial landmark predictor
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(MODEL_PATH)
 
 # Taking the indexes of left eye, right eye and nose
 (lStart, lEnd) = FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = FACIAL_LANDMARKS_IDXS["right_eye"]
 (nStart, nEnd) = FACIAL_LANDMARKS_IDXS["nose"]
 
-# Initializing the Video Capture from source
-vs = cv2.VideoCapture(0)
+
+def find_working_camera(start_index=0, max_index=4):
+    """Try to find a working camera index. Returns (capture, index) or (None, None)."""
+    for i in range(start_index, start_index + max_index + 1):
+        cap = cv2.VideoCapture(i)
+        # Small delay to let camera initialize
+        time.sleep(0.5)
+        if cap is not None and cap.isOpened():
+            return cap, i
+        else:
+            try:
+                cap.release()
+            except Exception:
+                pass
+    return None, None
+
+# Initialize the Video Capture from source (try to auto-detect working camera)
+vs, cam_index = find_working_camera(0, 3)
+if vs is None:
+    print("❌ No webcam could be opened. Please check camera connection/permissions. Exiting.")
+    sys.exit(1)
+else:
+    print(f"📷 Using camera index {cam_index}")
+
 # 1 sec pause to load the VideoStream before running the predictor
 time.sleep(1.0)
 
@@ -230,7 +257,7 @@ def show_help():
 
 
 # Factor to amplify the cursor movement by.
-sclFact = 6
+sclFact = 5
 firstRun = True
 
 # Declaring variables to hold the displacement
@@ -267,93 +294,116 @@ def track_nose(nose):
         yC = cy
 
 
-# Show initial help
-show_help()
+def main():
+    # Show initial help
+    show_help()
 
-# Looping over video frames
-while True:
-    # Reading frames from the VideoStream
-    ret, frame = vs.read()
-    if not ret:
-        break
+    try:
+        global COUNTER, TOTAL
+        while True:
+            # Reading frames from the VideoStream
+            ret, frame = vs.read()
+            if not ret:
+                print("⚠️ Frame not read from camera (camera disconnected?). Exiting loop.")
+                break
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # Detecting faces in the grayscale frame
-    rects = detector(gray, 0)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Detecting faces in the grayscale frame
+            rects = detector(gray, 0)
 
-    # Looping over the face detections
-    for rect in rects:
-        # Finding the facial landmarks for the face
-        shape = predictor(gray, rect)
-        # Converting the facial landmark coords to a NumPy array
-        shape = shape_arr_func(shape)
+            # Looping over the face detections
+            for rect in rects:
+                # Finding the facial landmarks for the face
+                shape = predictor(gray, rect)
+                # Converting the facial landmark coords to a NumPy array
+                shape = shape_arr_func(shape)
 
-        # Left eye coords
-        leftEye = shape[lStart:lEnd]
-        # Right eye coords
-        rightEye = shape[rStart:rEnd]
-        # Coords for the nose
-        nose = shape[nStart:nEnd]
+                # Left eye coords
+                leftEye = shape[lStart:lEnd]
+                # Right eye coords
+                rightEye = shape[rStart:rEnd]
+                # Coords for the nose
+                nose = shape[nStart:nEnd]
 
-        # Finding E.A.R for the left and right eye
-        leftEAR = ear_func(leftEye)
-        rightEAR = ear_func(rightEye)
+                # Finding E.A.R for the left and right eye
+                leftEAR = ear_func(leftEye)
+                rightEAR = ear_func(rightEye)
 
-        # Tracking the nose
-        track_nose(nose)
+                # Tracking the nose
+                track_nose(nose)
 
-        # Finding the average for E.A.R together for both eyes
-        ear = (leftEAR + rightEAR) / 2.0
+                # Finding the average for E.A.R together for both eyes
+                ear = (leftEAR + rightEAR) / 2.0
 
-        # Increment blink counter if the EAR was less than specified threshold
-        if ear < EYE_AR_THRESH:
-            COUNTER += 1
+                # Increment blink counter if the EAR was less than specified threshold
+                if ear < EYE_AR_THRESH:
+                    COUNTER += 1
 
-        else:
-            # If the eyes were closed for a sufficient number of frames
-            # then increment the total number of blinks
-            if EYE_AR_CONSEC_FRAMES_MIN <= COUNTER <= EYE_AR_CONSEC_FRAMES_MAX:
-                TOTAL += 1
-                # Giving the user a 0.7s buffer to blink
-                # the required amount of times
-                threading.Timer(0.7, left_click_func).start()
-            # Perform a right click if the eyes were closed
-            # for more than the limit for left clicks
-            elif COUNTER > EYE_AR_CONSEC_FRAMES_MAX:
-                TOTAL = 1
-                right_click_func()
-            # Reset the COUNTER after a click event
-            COUNTER = 0
+                else:
+                    # If the eyes were closed for a sufficient number of frames
+                    # then increment the total number of blinks
+                    if EYE_AR_CONSEC_FRAMES_MIN <= COUNTER <= EYE_AR_CONSEC_FRAMES_MAX:
+                        TOTAL += 1
+                        # Giving the user a 0.7s buffer to blink
+                        # the required amount of times
+                        threading.Timer(0.7, left_click_func).start()
+                    # Perform a right click if the eyes were closed
+                    # for more than the limit for left clicks
+                    elif COUNTER > EYE_AR_CONSEC_FRAMES_MAX:
+                        TOTAL = 1
+                        right_click_func()
+                    # Reset the COUNTER after a click event
+                    COUNTER = 0
 
-    # Keyboard controls
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
-        break
-    elif key == ord('h'):
-        show_help()
-    elif key == ord('y'):
-        toggle_youtube_mode()
+            # Keyboard controls
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+            elif key == ord('h'):
+                show_help()
+            elif key == ord('y'):
+                toggle_youtube_mode()
 
-    # Display mode status
-    if youtube_mode:
-        status_text = "YouTube Mode: ON"
-        color = (0, 255, 0)  # Green
-    else:
-        status_text = "Mouse Mode: ON"
-        color = (0, 0, 255)  # Red
+            # Display mode status
+            if youtube_mode:
+                status_text = "YouTube Mode: ON"
+                color = (0, 255, 0)  # Green
+            else:
+                status_text = "Mouse Mode: ON"
+                color = (0, 0, 255)  # Red
 
-    # Add status text to frame
-    cv2.putText(frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+            # Add status text to frame
+            cv2.putText(frame, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-    # Show the frame
-    cv2.imshow("FaceMouse YouTube Controller", frame)
+            # Show the frame
+            cv2.imshow("FaceMouse YouTube Controller", frame)
+
+    except KeyboardInterrupt:
+        print("\n🛑 Keyboard interrupt received — shutting down...")
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+    finally:
+        # Cleanup
+        try:
+            if vs is not None:
+                vs.release()
+        except Exception:
+            pass
+        try:
+            cv2.destroyAllWindows()
+        except Exception:
+            pass
+
+        if YOUTUBE_ENABLED:
+            try:
+                # only cleanup if youtube_controller exists
+                if 'youtube_controller' in globals() and youtube_controller is not None:
+                    youtube_controller.cleanup()
+            except Exception:
+                pass
+
+        print("👋 FaceMouse YouTube Controller stopped")
 
 
-# Cleanup
-vs.release()
-cv2.destroyAllWindows()
-
-if YOUTUBE_ENABLED:
-    youtube_controller.cleanup()
-
-print("👋 FaceMouse YouTube Controller stopped")
+if __name__ == '__main__':
+    main()

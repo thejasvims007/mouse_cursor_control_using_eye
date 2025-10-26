@@ -1,8 +1,8 @@
-# 🎮 Eye Controlled Cursor Using Python 
+# 🎮 Eye Controlled Cursor Using Python
 
-**Control YouTube with your face and voice!** An enhanced version of FaceMouse that integrates facial gesture control with YouTube playback control and voice commands.
+**Control your mouse with facial gestures!** A Python application that uses computer vision to track facial movements and eye blinks for hands-free mouse control.
 
-![OpenCV](https://img.shields.io/badge/OpenCV-4.5+-red) ![Selenium](https://img.shields.io/badge/Selenium-4.15+-orange)
+![OpenCV](https://img.shields.io/badge/OpenCV-4.5+-red) ![Dlib](https://img.shields.io/badge/Dlib-19.22+-blue)
 
 ## ✨ Features
 
@@ -11,113 +11,75 @@
 - **Eye Blinks**: Different blink patterns control different actions
 - **Real-time Processing**: Smooth, responsive facial tracking
 
-### 🎬 **YouTube Control**
-- **Play/Pause**: Toggle video playback
-- **Volume Control**: Increase/decrease volume
-- **Video Navigation**: Next/previous video, seek forward/backward
-- **Video Controls**: Like, subscribe, fullscreen toggle
-- **Settings Access**: Open YouTube settings menu
-
-### 🎤 **Voice Commands**
-- **Playback**: "play", "pause", "stop"
-- **Audio**: "mute", "unmute", "volume up", "volume down"
-- **Navigation**: "next", "previous", "forward", "backward"
-- **Interface**: "fullscreen", "settings", "like", "subscribe"
-
-### 🔄 **Dual Mode System**
-- **Mouse Mode**: Traditional mouse control with facial gestures
-- **YouTube Mode**: YouTube-specific controls with voice commands
+### 🔄 **Mouse Controls**
+- **1 Blink** → Left Click
+- **2 Blinks** → Double Click
+- **3 Blinks** → Mouse Down (Drag)
+- **4+ Blinks** → Right Click
 
 ## 📋 System Requirements
 
 ### **Hardware Requirements**
 - **Webcam**: Any standard webcam (built-in or external)
-- **Microphone**: For voice commands
-- **Internet Connection**: For YouTube access and model download
 - **Minimum RAM**: 4GB (8GB recommended)
 - **Processor**: Intel i3 or equivalent (i5+ recommended)
 
 ### **Software Requirements**
-- **Operating System**: Windows 10/11, macOS, or Linux
+- **Operating System**: Windows 10/11
 - **Python**: 3.8 or higher
-- **Chrome Browser**: Latest version (for YouTube control)
 - **Visual C++ Redistributable**: For Windows users
 
-## 🚀 Quick Start (3-Command Setup)
+## 🚀 Quick Start (2-Command Setup)
 
 ### **Command 1: Install Python Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-### **Command 2: Download Facial Recognition Model**
+### **Command 2: Run the Application**
 ```bash
-# Download the facial landmark model
-curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-
-# Decompress the model
-python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Model downloaded and decompressed successfully!')"
-```
-
-### **Command 3: Run FaceMouse YouTube Controller**
-```bash
+# Option 1: Run directly with Python
 python face_mouse_youtube.py
+
+# Option 2: Use the Windows batch file (recommended)
+run.bat
 ```
 
 ## 📁 Project Files
 
 ```
-FaceMouse-YouTube/
-├── face_mouse_youtube.py      # Main application (enhanced with YouTube control)
-├── youtube_controller.py      # YouTube control module
-├── test_youtube_controller.py # Test script for YouTube functionality
+mouse_cursor_control_using_eye/
+├── face_mouse_youtube.py      # Main application script
 ├── requirements.txt           # Python dependencies
+├── run.bat                    # Windows batch file to run the app
 ├── README.md                  # This file
 ├── shape_predictor_68_face_landmarks.dat  # Facial landmark model (99MB)
-└── shape_predictor_68_face_landmarks.dat.bz2  # Compressed model file
+├── shape_predictor_68_face_landmarks.dat.bz2  # Compressed model file
+└── dlib-19.22.99-cp38-cp38-win_amd64.whl  # Dlib wheel for Windows
 ```
 
 ## 🎮 Usage Guide
 
 ### **Starting the Application**
-```bash
-python face_mouse_youtube.py
-```
+Run one of the commands above. The application will:
+- Check for the facial landmark model file
+- Initialize the webcam
+- Start tracking your face
 
-### **Keyboard Controls**
-- **`h`** - Show help menu
-- **`y`** - Toggle YouTube mode ON/OFF
-- **`q`** - Quit application
+### **Controls**
+- **Move head** → Move cursor
+- **1 blink** → Left click
+- **2 blinks** → Double click
+- **3 blinks** → Mouse down (drag)
+- **4+ blinks** → Right click
+- **Press 'h'** → Show help
+- **Press 'q'** → Quit
 
-### **Mouse Mode Gestures** (Default Mode)
-- **1 Blink** → Left Click
-- **2 Blinks** → Double Click
-- **3 Blinks** → Mouse Down (Drag)
-- **4+ Blinks** → Right Click
-
-### **YouTube Mode Gestures** (Press 'y' to activate)
-- **1 Blink** → Play/Pause video
-- **2 Blinks** → Next video
-- **3 Blinks** → Mute/Unmute
-- **4 Blinks** → Fullscreen toggle
-- **5 Blinks** → Like video
-- **6 Blinks** → Volume up
-- **7 Blinks** → Volume down
-- **8+ Blinks** → Subscribe
-
-### **Voice Commands** (YouTube Mode)
-- **"play"** - Start/resume playback
-- **"pause"** - Pause playback
-- **"mute"** - Mute audio
-- **"unmute"** - Unmute audio
-- **"volume up"** - Increase volume
-- **"volume down"** - Decrease volume
-- **"next"** - Next video
-- **"previous"** - Previous video
-- **"fullscreen"** - Toggle fullscreen
-- **"like"** - Like current video
-- **"subscribe"** - Subscribe to channel
-- **"settings"** - Open settings menu
+### **Tips for Best Results**
+- Ensure good lighting on your face
+- Sit at a consistent distance from the camera
+- Keep your head movements smooth
+- Blink deliberately for clicks
 
 ## 🔧 Detailed Setup Instructions
 
@@ -128,35 +90,17 @@ python face_mouse_youtube.py
 
 ### **Step 2: Install Dependencies**
 ```bash
-# Upgrade pip first
-python -m pip install --upgrade pip
-
 # Install all required packages
 pip install -r requirements.txt
 ```
 
-### **Step 3: Download Facial Recognition Model**
-```bash
-# Download compressed model (64MB)
-curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-
-# Decompress model (creates 99MB .dat file)
-python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Model decompressed successfully!')"
-```
-
-### **Step 4: Verify Installation**
+### **Step 3: Verify Installation**
 ```bash
 # Test core dependencies
 python -c "import cv2, dlib, mouse, numpy as np, scipy; print('✅ Core dependencies working!')"
-
-# Test YouTube controller
-python -c "from youtube_controller import YouTubeController; print('✅ YouTube controller ready!')"
-
-# Test audio system
-python -c "import pygame; pygame.mixer.init(); print('✅ Audio system working!')"
 ```
 
-### **Step 5: Run Application**
+### **Step 4: Run Application**
 ```bash
 python face_mouse_youtube.py
 ```
@@ -169,35 +113,10 @@ python face_mouse_youtube.py
 ```bash
 # Check available cameras
 python -c "import cv2; print([i for i in range(5) if cv2.VideoCapture(i).isOpened()])"
-
-# Try different camera index in code (change cv2.VideoCapture(0) to cv2.VideoCapture(1))
 ```
+- Try different camera index in code (change `cv2.VideoCapture(0)` to `cv2.VideoCapture(1)`)
 
-#### **2. Chrome Driver Issues**
-```bash
-# Install Chrome driver manually
-python -c "from webdriver_manager.chrome import ChromeDriverManager; print(ChromeDriverManager().install())"
-
-# Or update Chrome to latest version
-```
-
-#### **3. Audio/Microphone Issues**
-```bash
-# Test microphone
-python -c "import speech_recognition as sr; sr.Microphone().list_microphone_names()"
-
-# Install PyAudio dependencies for Windows
-pip install pipwin
-pipwin install pyaudio
-```
-
-#### **4. Permission Errors**
-```bash
-# Run as administrator (Windows)
-# Or check antivirus settings
-```
-
-#### **5. Import Errors**
+#### **2. Import Errors**
 ```bash
 # Reinstall specific package
 pip uninstall package_name
@@ -207,15 +126,25 @@ pip install package_name
 pip cache purge
 ```
 
+#### **3. Model File Missing**
+The model file `shape_predictor_68_face_landmarks.dat` should be present. If missing:
+```bash
+# Download and decompress
+curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
+python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Model decompressed successfully!')"
+```
+
+#### **4. Permission Errors**
+- Run as administrator (Windows)
+- Check antivirus settings
+
 ### **Error Messages & Solutions**
 
 | Error | Solution |
 |-------|----------|
-| `No module named 'dlib'` | `pip install dlib` |
-| `No module named 'selenium'` | `pip install selenium` |
-| `Chrome driver not found` | `pip install webdriver-manager` |
-| `Microphone not working` | `pip install pyaudio` |
-| `OpenCV camera error` | Check camera permissions/connections |
+| `No module named 'dlib'` | `pip install dlib` or use the provided wheel |
+| `No module named 'cv2'` | `pip install opencv-python` |
+| `Camera not opened` | Check camera permissions/connections |
 | `Model file not found` | Download and decompress the facial model |
 
 ## ⚙️ Configuration
@@ -223,20 +152,13 @@ pip cache purge
 ### **Adjust Sensitivity**
 Edit these values in `face_mouse_youtube.py`:
 ```python
-sclFact = 6          # Cursor movement sensitivity (default: 6)
+sclFact = 4          # Cursor movement sensitivity (default: 4)
 EYE_AR_THRESH = 0.20 # Blink detection threshold (default: 0.20)
 ```
 
 ### **Camera Settings**
 ```python
 vs = cv2.VideoCapture(0)  # Change 0 to 1, 2, etc. for different cameras
-```
-
-### **Chrome Options**
-Edit `youtube_controller.py` for browser preferences:
-```python
-chrome_options.add_argument("--start-maximized")  # Window size
-chrome_options.add_argument("--disable-gpu")      # Performance
 ```
 
 ## 📊 Performance Tips
@@ -249,30 +171,9 @@ chrome_options.add_argument("--disable-gpu")      # Performance
 5. **Use External Webcam**: Better quality than built-in cameras
 
 ### **System Optimization**
-```bash
-# Update graphics drivers
-# Close unnecessary background applications
-# Use SSD storage for better I/O performance
-```
-
-## 🔮 Advanced Features
-
-### **Custom Gestures**
-Modify gesture mappings in `youtube_controller.py`:
-```python
-self.gesture_commands = {
-    1: 'play_pause',      # 1 blink = play/pause
-    2: 'next',            # 2 blinks = next video
-    # Add your custom gestures here
-}
-```
-
-### **Voice Command Languages**
-```python
-# Add language support in youtube_controller.py
-recognizer.recognize_google(audio, language='en-US')  # English
-recognizer.recognize_google(audio, language='es-ES')  # Spanish
-```
+- Update graphics drivers
+- Close unnecessary background applications
+- Use SSD storage for better I/O performance
 
 ## 📞 Support & Help
 
@@ -284,15 +185,15 @@ recognizer.recognize_google(audio, language='es-ES')  # Spanish
 
 ### **Common Questions**
 - **Q: Can I use it without a camera?**
-  - A: The facial gestures require a camera, but voice commands work without camera
+  - A: No, the facial gestures require a camera
 - **Q: Does it work on Mac/Linux?**
-  - A: Yes, with appropriate dependencies installed
+  - A: The code is cross-platform, but dependencies may need adjustment
 - **Q: Can I customize the gestures?**
-  - A: Yes, modify the gesture mappings in the code
+  - A: Yes, modify the blink thresholds and actions in the code
 
 ## 📄 License
 
-This project is based on the original FaceMouse project. Please refer to the original license terms.
+This project is open-source. Please refer to standard open-source licenses.
 
 ## 🤝 Contributing
 
@@ -304,27 +205,25 @@ This project is based on the original FaceMouse project. Please refer to the ori
 
 ---
 
-**🎮 Enjoy hands-free YouTube control with FaceMouse!**
+**🎮 Enjoy hands-free mouse control with FaceMouse!**
 
-*Made with ❤️ for the computer vision and automation community*
+*Made with ❤️ for the computer vision community*
 
 ---
 
 ## 📝 Quick Reference
 
-### **3-Command Setup:**
+### **2-Command Setup:**
 ```bash
 pip install -r requirements.txt
-curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Setup complete!')"
-```
-
-### **Run Application:**
-```bash
 python face_mouse_youtube.py
 ```
 
 ### **Controls:**
-- **Press 'y'** → YouTube mode
-- **Press 'h'** → Help
-- **Press 'q'** → Quit
+- **Move head** → Cursor movement
+- **1 blink** → Left click
+- **2 blinks** → Double click
+- **3 blinks** → Drag
+- **4+ blinks** → Right click
+- **'h'** → Help
+- **'q'** → Quit
