@@ -94,7 +94,24 @@ Run one of the commands above. The application will:
 pip install -r requirements.txt
 ```
 
+<<<<<<< HEAD
 ### **Step 3: Verify Installation**
+=======
+### **Step 3: Download Facial Recognition Model**
+```bash
+# Download compressed model (64MB)
+curl -O http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
+
+next paste this
+
+powershell -Command "Invoke-WebRequest -Uri 'http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2' -OutFile 'shape_predictor_68_face_landmarks.dat.bz2'"
+
+# Decompress model (creates 99MB .dat file)
+python -c "import bz2; data = bz2.decompress(open('shape_predictor_68_face_landmarks.dat.bz2', 'rb').read()); open('shape_predictor_68_face_landmarks.dat', 'wb').write(data); print('✅ Model decompressed successfully!')"
+```
+
+### **Step 4: Verify Installation**
+>>>>>>> 82af2ef861eb80f98a549b4ef76d7c788ed6a090
 ```bash
 # Test core dependencies
 python -c "import cv2, dlib, mouse, numpy as np, scipy; print('✅ Core dependencies working!')"
